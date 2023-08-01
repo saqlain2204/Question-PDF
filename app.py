@@ -40,20 +40,20 @@ def split_chunks(text):
 
     return chunks
 
-def creating_embeddings(chunks):
+def creating_embeddings(chunks, key):
 
     # Converting in vectors
-    embeddings = OpenAIEmbeddings()
+    embeddings = OpenAIEmbeddings(openai_api_key=key)
 
     base = FAISS.from_texts(chunks, embeddings)
 
     return base
 
-def user_interaction(base):
+def user_interaction(base, key):
     user_ques = st.text_input("Ask question")
     if user_ques:
         docs = base.similarity_search(user_ques)
-        chain = load_qa_chain(OpenAI(), chain_type="stuff")
+        chain = load_qa_chain(OpenAI(openai_api_key=key), chain_type="stuff")
         response = chain.run(input_documents = docs, question=user_ques)
 
         st.write(response)
@@ -62,12 +62,20 @@ def user_interaction(base):
 def main():
     st.title("Question PDF ❔")
     uploaded_file = file_upload()
-    if uploaded_file:
-        api_key=apikey()
+    if uploaded_file:    
+        try:
+            key=apikey()
+        except:
+            key = st.text_input("Enter your OpenAI API key")
+        
         text = extract_text(uploaded_file)
         chunks = split_chunks(text)
-        base = creating_embeddings(chunks)
-        user_interaction(base)
+        try:
+            base = creating_embeddings(chunks, key)
+            user_interaction(base, key)
+        except:
+            st.error("Your file may not contain text")
+
             
 if __name__=='__main__':
     main()
