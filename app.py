@@ -32,7 +32,7 @@ def extract_text(uploaded_file):
 def split_chunks(text):
     text_splitter = CharacterTextSplitter(
         separator = "\n",
-        chunk_size = 1000,
+        chunk_size = 10000,
         chunk_overlap = 200,
         length_function = len
     )
