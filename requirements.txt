@@ -3,3 +3,4 @@ PyPDF2
 streamlit
 python-dotenv
 langchain
+tiktoken
