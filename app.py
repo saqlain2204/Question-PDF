@@ -8,6 +8,7 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
+from langchain.callbacks import get_openai_callback
 import langchain
 langchain.verbose=False
 
@@ -28,7 +29,7 @@ def extract_text(uploaded_file):
         text = text + page.extract_text()
 
     return text
-
+@st.cache_resource
 def split_chunks(text):
     text_splitter = CharacterTextSplitter(
         separator = "\n",
@@ -37,9 +38,10 @@ def split_chunks(text):
         length_function = len
     )
     chunks = text_splitter.split_text(text)
-
+    # st.write(chunks)
     return chunks
 
+@st.cache_resource
 def creating_embeddings(chunks, key):
 
     # Converting in vectors
@@ -54,7 +56,10 @@ def user_interaction(base, key):
     if user_ques:
         docs = base.similarity_search(user_ques)
         chain = load_qa_chain(OpenAI(openai_api_key=key), chain_type="stuff")
-        response = chain.run(input_documents = docs, question=user_ques)
+        with get_openai_callback() as cb:
+
+            response = chain.run(input_documents = docs, question=user_ques)
+            print(cb)
 
         st.write(response)
 
@@ -74,7 +79,7 @@ def main():
             base = creating_embeddings(chunks, key)
             user_interaction(base, key)
         except:
-            st.error("Your file may not contain text")
+            st.error("An error occured. Please again ")
 
             
 if __name__=='__main__':
