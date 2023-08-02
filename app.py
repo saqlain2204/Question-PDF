@@ -70,7 +70,7 @@ def user_interaction(base, key):
 
 def main():
     st.title("Question PDF ❔")
-    
+    key = ''
     with st.sidebar:
         st.title(f"Welcome to :red[Question PDF]")
 
@@ -79,17 +79,21 @@ def main():
     uploaded_file = file_upload()
     version = st.sidebar.selectbox("Select your choice",('Community Version','Enter own OpenAI API Key'))
     if uploaded_file:    
-        if version == 'Community Version':
-            key=apikey()
-        else:
+        if version == 'Enter own OpenAI API Key':
             key = st.sidebar.text_input("Enter your OpenAI API Key", type='password')
-        text = extract_text(uploaded_file)
-        chunks = split_chunks(text)
-        try:
-            base = creating_embeddings(chunks, key)
-            user_interaction(base, key)
-        except:
-            st.error("An error occured. Please again ")
+        else:
+            key = apikey()
+
+        if key:  
+            text = extract_text(uploaded_file)
+            chunks = split_chunks(text)
+            try:
+                base = creating_embeddings(chunks, key)
+                user_interaction(base, key)
+            except:
+                st.error("An error occurred. Please try again.")
+        else:
+            st.error("Please provide valid OpenAI API Key to continue.")
 
             
 if __name__=='__main__':
