@@ -13,9 +13,13 @@ import langchain
 langchain.verbose=False
 
 def apikey():
-    load_dotenv()
-    print(os.getenv("OPENAI_API_KEY"))
-
+    try:
+        load_dotenv()
+        key = os.getenv("OPENAI_API_KEY")
+    except:
+        st.info("The community version has expired.")
+        key = st.text_input("Enter you OpenAI API Key")
+    return key
 
 def file_upload():
     uploaded_file = st.file_uploader("Choose a file", type='pdf')
@@ -66,13 +70,19 @@ def user_interaction(base, key):
 
 def main():
     st.title("Question PDF ❔")
+    
+    with st.sidebar:
+        st.title(f"Welcome to :red[Question PDF]")
+
+        st.write("The community version of this app is valid only until December 2023, after which you will need to use your own OpenAI API Key to continue using the service. Please note that there may be restrictions on the number of requests per day in the community version. Use it wisely, as the responses are entirely AI-based and should be used at your own risk."
+                 )
     uploaded_file = file_upload()
+    version = st.sidebar.selectbox("Select your choice",('Community Version','Enter own OpenAI API Key'))
     if uploaded_file:    
-        try:
+        if version == 'Community Version':
             key=apikey()
-        except:
-            key = st.text_input("Enter your OpenAI API key")
-        
+        else:
+            key = st.sidebar.text_input("Enter your OpenAI API Key", type='password')
         text = extract_text(uploaded_file)
         chunks = split_chunks(text)
         try:
