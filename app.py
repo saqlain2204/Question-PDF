@@ -66,13 +66,14 @@ def user_interaction(base, key):
             print(cb)
 
         st.write(response)
+        st.subheader("Thank you. We hope you had a good experience 😀🎓✨")
 
 
 def main():
     st.title("Question PDF ❔")
     key = ''
     with st.sidebar:
-        st.title(f"Welcome to :red[Question PDF]")
+        st.title(f"Welcome to :red[Question PDF] ❔")
 
         st.write("The community version of this app is valid only until December 2023, after which you will need to use your own OpenAI API Key to continue using the service. Please note that there may be restrictions on the number of requests per day in the community version. Use it wisely, as the responses are entirely AI-based and should be used at your own risk."
                  )
