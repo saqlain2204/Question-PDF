@@ -78,7 +78,7 @@ def main():
         st.write("The community version of this app is valid only until 1 December 2023 (may expire before this), after which you will need to use your own OpenAI API Key to continue using the service. Please note that there may be restrictions on the number of requests per day in the community version. Use it wisely, as the responses are entirely AI-based and should be used at your own risk."
                  )
     uploaded_file = file_upload()
-    version = st.sidebar.selectbox("Select your choice",('Community Version','Enter own OpenAI API Key'))
+    version = st.sidebar.selectbox("Select your choice",('Community Version','Enter OpenAI API Key'))
     if uploaded_file:    
         if version == 'Enter own OpenAI API Key':
             key = st.sidebar.text_input("Enter your OpenAI API Key", type='password')
